@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
+import * as httpMock from 'node-mocks-http';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -12,7 +13,20 @@ describe('UserController', () => {
     controller = module.get<UserController>(UserController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('should can say hello', async () => {
+    const response = await controller.sayHello('Anggyar', 'Muhamad Yahya');
+    expect(response).toBe('Hello Anggyar Muhamad Yahya');
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  it('should can view Template', async () => {
+    const response = httpMock.createResponse();
+    controller.viewHello('Anggyar', response);
+
+    expect(response._getRenderView()).toBe('index.html');
+    expect(response._getRenderData()).toEqual({
+      name: 'Anggyar',
+      title: 'Template Engine',
+    });
   });
 });
