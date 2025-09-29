@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import * as httpMock from 'node-mocks-http';
+import { UserService } from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -8,14 +9,15 @@ describe('UserController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
+      providers: [UserService],
     }).compile();
 
     controller = module.get<UserController>(UserController);
   });
 
   it('should can say hello', async () => {
-    const response = await controller.sayHello('Anggyar', 'Muhamad Yahya');
-    expect(response).toBe('Hello Anggyar Muhamad Yahya');
+    const response = await controller.sayHello('Anggyar');
+    expect(response).toBe('Hello Anggyar');
   });
 
   // eslint-disable-next-line @typescript-eslint/require-await
