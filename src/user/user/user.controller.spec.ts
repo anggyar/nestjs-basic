@@ -2,6 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import * as httpMock from 'node-mocks-http';
 import { UserService } from './user.service';
+import { MailService } from '../mail/mail.service';
+import { Connection } from '../connection/connection';
+import { UserRepository } from '../user-repository/user-repository';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -9,7 +12,16 @@ describe('UserController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService],
+      providers: [
+        UserService,
+        MailService,
+        Connection,
+        UserRepository,
+        {
+          provide: 'EmailService',
+          useExisting: MailService,
+        },
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);

@@ -5,6 +5,7 @@ import {
   Header,
   HttpCode,
   HttpRedirectResponse,
+  Inject,
   Post,
   Query,
   Redirect,
@@ -14,6 +15,8 @@ import {
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { Connection } from '../connection/connection';
+import { MailService } from '../mail/mail.service';
+import { UserRepository } from '../user-repository/user-repository';
 
 // import express from 'express';
 
@@ -22,10 +25,16 @@ export class UserController {
   constructor(
     private service: UserService,
     private connection: Connection,
+    private mailService: MailService,
+    private userRepository: UserRepository,
+    @Inject('EmailService') private emailService: MailService,
   ) {}
 
   @Get('/connection')
   async getConnection(): Promise<string> {
+    this.userRepository.save();
+    this.mailService.send();
+    this.emailService.send();
     return this.connection.getName();
   }
 
