@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { MailService } from '../mail/mail.service';
 import { Connection } from '../connection/connection';
 import { UserRepository } from '../user-repository/user-repository';
+import { MemberService } from '../member/member.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -21,6 +22,7 @@ describe('UserController', () => {
           provide: 'EmailService',
           useExisting: MailService,
         },
+        MemberService,
       ],
     }).compile();
 
