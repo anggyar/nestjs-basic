@@ -14,6 +14,6 @@ export class MemberService {
 
   sendEmail() {
     const emailService = this.moduleRef.get(MailService);
-    mailService.send();
+    emailService.send();
   }
 }
