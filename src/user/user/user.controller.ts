@@ -11,6 +11,7 @@ import {
   Redirect,
   Req,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
@@ -19,6 +20,7 @@ import { MailService } from '../mail/mail.service';
 import { UserRepository } from '../user-repository/user-repository';
 import { MemberService } from '../member/member.service';
 import { User } from '@prisma/client';
+import { ValidationFilter } from 'src/validation/validation.filter';
 
 // import express from 'express';
 
@@ -52,6 +54,7 @@ export class UserController {
   }
 
   @Get('/hello')
+  @UseFilters(ValidationFilter)
   async sayHello(@Query('name') name: string): Promise<string> {
     return this.service.sayHello(name);
   }
