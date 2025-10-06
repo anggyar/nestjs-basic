@@ -4,6 +4,7 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
   HttpRedirectResponse,
   Inject,
   Post,
@@ -50,11 +51,20 @@ export class UserController {
     @Query('first_name') firstName: string,
     @Query('last_name') lastName: string,
   ): Promise<User> {
+    if (!firstName) {
+      throw new HttpException(
+        {
+          code: 400,
+          errors: 'first_name is required',
+        },
+        400,
+      );
+    }
     return this.userRepository.save(firstName, lastName);
   }
 
   @Get('/hello')
-  @UseFilters(ValidationFilter)
+  // @UseFilters(ValidationFilter)
   async sayHello(@Query('name') name: string): Promise<string> {
     return this.service.sayHello(name);
   }
