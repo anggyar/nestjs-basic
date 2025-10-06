@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 import {
+  Body,
   Controller,
   Get,
   Header,
@@ -7,12 +8,15 @@ import {
   HttpException,
   HttpRedirectResponse,
   Inject,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   Redirect,
   Req,
   Res,
   UseFilters,
+  UsePipes,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
@@ -22,9 +26,13 @@ import { UserRepository } from '../user-repository/user-repository';
 import { MemberService } from '../member/member.service';
 import { User } from '@prisma/client';
 import { ValidationFilter } from 'src/validation/validation.filter';
+import {
+  LoginUserRequest,
+  loginUserRequestValidation,
+} from 'src/model/login.model';
+import { ValidationPipe } from 'src/validation/validation.pipe';
 
 // import express from 'express';
-
 @Controller('/api/users')
 export class UserController {
   constructor(
@@ -118,10 +126,11 @@ export class UserController {
   //   return request.params.id;
   // }
 
-  // @Get('/:id')
-  // getById(@Param('id') id: string): string {
-  //   return `Get ${id}`;
-  // }
+  @Get('/:id')
+  getById(@Param('id', ParseIntPipe) id: number): string {
+    console.info(id * 10);
+    return `Get ${id}`;
+  }
 
   @Post()
   post(): string {
@@ -131,5 +140,26 @@ export class UserController {
   @Get('/sample')
   get(): string {
     return 'GET';
+  }
+
+  // !LOGIN
+  // @Post('/login')
+  // @UseFilters(ValidationFilter)
+  // login(
+  //   @Body(new ValidationPipe(loginUserRequestValidation))
+  //   request: LoginUserRequest,
+  // ) {
+  //   return `Hello ${request.username}`;
+  // }
+
+  @Post('/login')
+  @UseFilters(ValidationFilter)
+  @UsePipes(new ValidationPipe(loginUserRequestValidation))
+  login(
+    @Query('name') name: string,
+    @Body()
+    request: LoginUserRequest,
+  ): string {
+    return `Hello ${request.username}`;
   }
 }
